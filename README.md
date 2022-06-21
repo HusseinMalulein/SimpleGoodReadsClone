@@ -14,6 +14,9 @@ The following are the main user functions in the system:
 
 Some Important Information for the instructor:
 -Many of the tasks in the original requirement specification document were changed due to their hard implementation and due to not resembling how goodreads work.
+
 -Above were the ones implemented in the system
+
 -Similar to goodreads website, a user can only become an author if a user contacts the website and asks to become an author. It is done manually in the database by changing one Boolean parameter.
+
 -To sign in through the system, use Hussein as username and password as Hussein, all names in the current database have the same passwords as the username/first name.
