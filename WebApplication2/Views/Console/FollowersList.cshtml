@@ -1,0 +1,159 @@
+﻿
+@{
+    ViewData["Title"] = "FollowersList";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+@section Styles{
+       <link rel="stylesheet" href="/css/blog.css" />
+}
+    <h1>Followers List</h1>
+    <div class="container">
+        <div class="row">
+               <div class="col-lg-3" >
+                <div class="widget border-0">
+                    <div class="search">
+                        <input class="form-control" type="text" id="searchusertext" placeholder="Search User">
+                    </div>
+                </div>
+                </div>
+                <div class="col-lg-3" >
+                <div class="widget border-0">
+                    <div class="clearfix">
+                        <button type="button" id="SearchUser" class="btn btn-success pull-right">Search</button>
+                    </div>
+                </div>
+                </div>
+                    <div class="job-shortby ml-sm-auto d-flex align-items-center">
+                        <form class="form-inline">
+                            <div class="form-group mb-0">
+                                <label class="justify-content-start mr-2">Sort by :</label>
+                                <div class="short-by">
+                                    <select class="form-control basic-select select2-hidden-accessible" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                        <option data-select2-id="3">Newest</option>
+                                        <option>Oldest</option>
+                                        <option>By Name</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row"style="margin-top:30px" id="friendslistdiv">
+
+                </div>
+
+                <div class="row">
+                    <div class="col-12 text-center mt-4 mt-sm-5">
+                        <ul class="pagination justify-content-center mb-0">
+                            <li class="page-item disabled"> <span class="page-link">Prev</span> </li>
+                            <li class="page-item active" aria-current="page"><span class="page-link">1 </span> <span class="sr-only">(current)</span></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item"><a class="page-link" href="#">...</a></li>
+                            <li class="page-item"><a class="page-link" href="#">25</a></li>
+                            <li class="page-item"> <a class="page-link" href="#">Next</a> </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+  $(function () {
+       BuildFolowersPanel('');
+       $("#SearchUser").click(function(){
+        var searchtext=$("#searchusertext").val();
+        BuildFolowersPanel(searchtext);
+      });
+  });
+function BuildSearchFowllowersList(followers){
+    var htmlcontent='';
+     $('#friendslistdiv').html('');
+     
+    for(var i=0;i<followers.length;i++)
+    {
+       
+        htmlcontent +='<div class="col-sm-6 col-lg-4 mb-4"> <div class="candidate-list candidate-grid"> <div class="candidate-list-image"> <img class="img-fluid" src="'+followers[i].imgpath+'" alt=""> </div> <div class="candidate-list-details"> <div class="candidate-list-info">  <div class="candidate-list-title"> <h5><a href="/Home/ViewUser/'+followers[i].userId+'">'+
+            followers[i].name+'</a></h5></div><div class="candidate-list-option">';
+
+            htmlcontent +='<ul class="list-unstyled"> <li>';
+            if(followers[i].following==true){
+                htmlcontent+='<div class="clearfix">';
+                htmlcontent+='<button type="button" onclick="UnFollow('+followers[i].userId+')" class="btn btn-success pull-right ">UnFollow</button></div>'
+             }
+            else{
+                  htmlcontent+='<div class="clearfix">';
+                htmlcontent+='<button type="button" onclick="Follow('+followers[i].userId+')" class="btn btn-success pull-right ">Follow</button></div>'
+             }
+             htmlcontent+='</li></ul> </div> </div> <div class="candidate-list-favourite-time"> <a class="candidate-list-favourite order-2" href="#"><i class="far fa-heart"></i></a> <span class="candidate-list-time order-1"><i class="far fa-clock pr-1"></i>'+followers[i].followeddate+'</span> </div> </div> </div> </div>';
+
+    }
+    $('#friendslistdiv').html(htmlcontent);
+}
+function BuildFolowersPanel(searchtext){
+    try{
+     $.ajax({
+                                    type: "GET",
+                                    url: "/Followers/SearchUsers",
+                                    data: { searchtext: searchtext},
+                                    headers: {"Authorization": "Bearer "+ localStorage.getItem('accesstoken')},
+                                    success: function (Data) {
+                                        BuildSearchFowllowersList(Data);
+                                    },
+                                    error: function (Data) {
+
+                                    }
+                                });
+          }
+          catch(o){
+            alert(o);
+          }
+}
+
+function Follow(userid){
+    try{
+     $.ajax({
+                                    type: "PUT",
+                                    url: "/Followers/Follow",
+                                    data: { userid: userid},
+                                    headers: {"Authorization": "Bearer "+ localStorage.getItem('accesstoken')},
+                                    success: function (Data) {
+                                        console.log(Data);
+                                        alert(Data.message);
+                                        BuildFolowersPanel('');
+                                    },
+                                    error: function (Data) {
+
+                                    }
+                                });
+          }
+          catch(o){
+            alert(o);
+          }
+
+}
+function UnFollow(userid){
+     try{
+     $.ajax({
+                                    type: "PUT",
+                                    url: "/Followers/UnFollow",
+                                    data: { userid: userid},
+                                    headers: {"Authorization": "Bearer "+ localStorage.getItem('accesstoken')},
+                                    success: function (Data) {
+                                        console.log(Data);
+                                        alert(Data.message);
+                                        BuildFolowersPanel('');
+                                    },
+                                    error: function (Data) {
+                                      
+                                        alert(Data.message);
+                                    }
+                                });
+          }
+          catch(o){
+            alert(o);
+          }
+}
+
+ 
+ </script>

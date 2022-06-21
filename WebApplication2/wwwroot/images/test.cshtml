@@ -1,0 +1,175 @@
+﻿@{
+    Layout = "";
+}
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="~/css/signup.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+</head>
+<body>
+    <div class="limiter">
+        <div class="container-login100" id="logincontainer">
+            <div class="wrap-login100">
+                <div class="login100-pic js-tilt" data-tilt>
+                    <img src="~/images/goodreads.png" alt="IMG">
+                </div>
+                <div class="login100-form">
+
+                    <span class="login100-form-title">
+                        Member Login
+                    </span>
+                    <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
+                        <input class="input100" id="email" type="text" name="email" placeholder="Email">
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa fa-envelope" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <div class="wrap-input100 validate-input" data-validate="Password is required">
+                        <input class="input100" id="password" type="password" name="pass" placeholder="Password">
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa fa-lock" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <div class="container-login100-form-btn">
+                        <button class="login100-form-btn" id="loginbtn">
+                            Login
+                        </button>
+                    </div>
+                    <div class="text-center p-t-12">
+                        <span class="txt1">
+                            Forgot
+                        </span>
+                        <a class="txt2" href="#">
+                            Username / Password?
+                        </a>
+                    </div>
+
+                    <div class="text-center p-t-136">
+                        <a class="txt2" href="#" id="triggerSignup">
+                            Create your Account
+                            <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-login100" id="signupcontainer" style="display:none;">
+            <div class="wrap-login100">
+                <div class="login100-pic js-tilt" data-tilt>
+                    <img src="~/images/goodreads.png" alt="IMG">
+                </div>
+                <form class="signup-form validate-form signup">
+                    <div id="signup">
+                        <span class="login100-form-title">
+                            Member SignUp
+                        </span>
+                        <div class="wrap-input100 validate-input">
+                            <input class="input100" type="text" id="firstname" name="firstname" placeholder="FirstName">
+                            <span class="focus-input100"></span>
+                        </div>
+                        <div class="wrap-input100 validate-input">
+                            <input class="input100" type="text" id="lastname" name="lastname" placeholder="LastName">
+                            <span class="focus-input100"></span>
+                        </div>
+                        <div class="wrap-input100 validate-input">
+                            <input class="input100" type="date" id="birthdate" name="birthdate" placeholder="BirthDate">
+                            <span class="focus-input100"></span>
+                        </div>
+                        <div class="genderdiv wrap-input100">
+                            <div class="form-check-inline genderdivoption" id="genderradio">
+                                <label class="form-check-label" style="margin-left:20%">
+                                    <input type="radio" class="form-check-input" name="optradio">Male
+                                </label>
+                                <label class="form-check-label" style="margin-left:40%">
+                                    <input type="radio" class="form-check-input" name="optradio">Female
+                                </label>
+                            </div>
+                        </div>
+                        <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
+                            <input class="input100" type="text" id="email_signup" name="email" placeholder="Email">
+                            <span class="focus-input100"></span>
+                            <span class="symbol-input100">
+                                <i class="fa fa-envelope" aria-hidden="true"></i>
+                            </span>
+                        </div>
+
+                        <div class="wrap-input100 validate-input" data-validate="Password is required">
+                            <input class="input100" type="password" id="password_signup" name="pass" placeholder="Password">
+                            <span class="focus-input100"></span>
+                            <span class="symbol-input100">
+                                <i class="fa fa-lock" aria-hidden="true"></i>
+                            </span>
+                        </div>
+
+                        <div class="container-login100-form-btn">
+                            <button class="login100-form-btn" id="signupbtn">
+                                SignUp
+                            </button>
+                        </div>
+                        <div class="text-center p-t-136">
+                            <a class="txt2" href="#" id="triggerSignin">
+                                Already Have account SignIn
+                                <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#triggerSignup").click(function () {
+                $("#signupcontainer").show();
+                $("#logincontainer").hide();
+            });
+            $("#triggerSignin").click(function () {
+                $("#signupcontainer").hide();
+                $("#logincontainer").show();
+            });
+            $("#loginbtn").click(function () { // on click to the login button
+                $.ajax({
+                    type: "POST", contentType: "application/json; charset=utf-8", dataType: "json",
+                    data: JSON.stringify({
+                        Email: Email
+                    }),
+                    url: "/Home/Subscribe",
+                    success: function (Data) {
+                        
+                    },
+                    error: function (Data) {
+                    }
+                });
+
+            });
+            $("#signupbtn").click(function () { // on click to the signup button
+                // get all the signup values from inputs and send them to the api
+                // through post request
+                $.ajax({
+                    type: "POST", contentType: "application/json; charset=utf-8", dataType: "json",
+                    data: JSON.stringify({
+                        //Email: Email,
+                    }),
+                    url: "/Home/Subscribe",
+                    success: function (Data) {
+                        //var resp = JSON.Parse();
+                    },
+                    error: function (Data) {
+                    }
+                });
+
+            });
+
+        });
+    </script>
+</body>
+</html>

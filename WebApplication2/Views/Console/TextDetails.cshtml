@@ -1,0 +1,459 @@
+﻿
+@{
+    ViewData["Title"] = "TextDetails";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+@section Styles{
+    <link rel="stylesheet" href="/css/textdetails.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/fontawesome.min.css" integrity="sha512-xX2rYBFJSj86W54Fyv1de80DWBq7zYLn2z0I9bIhQG+rxIF6XVJUpdGnsNHWRa6AvP89vtFupEPDP8eZAtu9qA==" crossorigin="anonymous" referrerpolicy="no-referrer" /> 
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+}
+                <div class="container pb50">
+                    <div class="row">
+                        <div class="col-md-12 mb40">
+                            <article>
+                                 <img id="textimage" src="" alt="" class="img-fluid mb30">
+                                <div class="post-content">
+                                    <h3 id="Title"></h3>
+                                    <ul class="post-meta list-inline">
+                                        <li class="list-inline-item">
+                                            <i class="fa fa-user-circle-o"></i> <a id="redirect_publisher" href=""></a>
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <i class="fa fa-calendar-o"></i> <a id="PublishedDate" href="#"></a>
+                                        </li>
+                                    </ul> 
+                                 <p class="lead" id="TextContent"></p>
+
+                                <hr class="mb40" />
+                                 <h4 class=" text-uppercase font500">Add/Remove From Your List</h4>
+                                <div class="textactionsdiv">
+
+                                </div>
+                                 <hr class="mb40" />
+                                <div class="col-md-6">
+                                    <h4 class=" text-uppercase font500">Ratings</h4>
+                                    <div class="ratings">
+
+
+
+                                    </div>
+                                </div>
+                                  <div class="col-md-6">
+                                <h4 class="text-uppercase font500 ratenow" id="ratingtitle">Rate Now!</h4>
+                                <div class="yourratings ratenow">
+                                    <a href="javascript:void(0);" onclick="RateNow(1);" ><span class="fa fa-star " style="color:black" ></span></a>
+                                    <a href="javascript:void(0);" onclick="RateNow(2);" ><span class="fa fa-star " style="color:black" ></span></a>
+                                    <a href="javascript:void(0);" onclick="RateNow(3);" ><span class="fa fa-star " style="color:black" ></span></a>
+                                    <a href="javascript:void(0);" onclick="RateNow(4);" ><span class="fa fa-star " style="color:black" ></span></a>
+                                    <a href="javascript:void(0);" onclick="RateNow(5);" ><span class="fa fa-star " style="color:black" ></span></a>
+                                </div>
+                            </div>
+                           
+
+                             <hr class="mb40">
+                            <h4 class="mb40 text-uppercase font500">Add Review</h4>
+                            <form role="form">
+                                 <div class="form-group">
+                                    <label for="title">Title</label>
+                                    <input type="text" class="form-control" id="reviewtitle">
+                                  </div>
+                                <div class="form-group">
+                                    <label>Review</label>
+                                    <textarea class="form-control" id="reviewtextarea" rows="5" placeholder="Comment"></textarea>
+                                </div>
+                                <div class="clearfix float-right">
+                                    <button type="button" id="addreviewbtn" class="btn btn-primary btn-lg">Submit</button>
+                                </div>
+                            </form>
+
+                            <hr class="mb40">
+                            <h4 class="mb40 text-uppercase font500">Reviews</h4>
+                            <div class="ReviewsDiv">
+
+
+
+                            </div>
+
+                    </article>
+                    <!-- post article-->
+                       <div class="modal" id="myModal">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+
+                              <!-- Modal Header -->
+                              <div class="modal-header">
+                                  <input id="typeof" type="hidden" value="" />
+                                  <input id="commentid" type="hidden" value="" />
+                                  <input id="reviewid" type="hidden" value="" />
+                                <h4 class="modal-title" id="modaltitle">Comment</h4>
+                              </div>
+
+                              <!-- Modal body -->
+                              <div class="modal-body">
+                            <div class="form-group">
+                                  <label for="comment">Your Text Here:</label>
+                                  <textarea class="form-control" rows="5" id="interactiontext"></textarea>
+                                </div>
+                             </div>
+
+                              <!-- Modal footer -->
+                              <div class="modal-footer">
+                                <button type="button" id="interactbtn" class="btn btn-info">Post </button>
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+
+                 </div>
+        <script type="text/javascript">
+        var id=@(ViewBag.IDPassedText);
+        $(function () {
+            BuildGeneres();
+            BuildTextDetails(id);
+
+            $("#addreviewbtn").click(function(){
+                 var text=$("#reviewtextarea").val();
+                 var textid=id;
+                 var title=$("#reviewtitle").val();
+                 $.ajax({
+                            type: "POST", contentType: "application/json; charset=utf-8", dataType: "json",
+                            data: JSON.stringify({
+                                Text:text,TextID:id,Title:title
+                            }),
+                            url: "/Texts/AddReview",
+                            headers: {"Authorization": "Bearer "+ localStorage.getItem('accesstoken')},
+                            success: function (Data) {
+                               alert(Data.message);
+                                GetReviewsAndComments(id);
+
+                            },
+                            error: function(xhr, error, thrown) {
+                                    if (xhr.status == 401){
+                                        window.location = '/Home';
+                                    }
+                                }
+                        });
+            });
+            $("#interactbtn").click(function(){
+                 var text=$("#interactiontext").val();
+                 var type=$("#typeof").val();
+                 var reviewid=$("#reviewid").val();
+                 var commentid=$("#commentid").val();
+                 $.ajax({
+                            type: "POST", contentType: "application/json; charset=utf-8", dataType: "json",
+                            data: JSON.stringify({
+                                Text:text,Type:type,ReviewID:reviewid,CommentID:commentid 
+                            }),
+                            url: "/Texts/Interact",
+                            headers: {"Authorization": "Bearer "+ localStorage.getItem('accesstoken')},
+                            success: function (Data) {
+                               alert(Data.message)
+                               GetReviewsAndComments(id);
+
+                            },
+                            error: function(xhr, error, thrown) {
+                                    if (xhr.status == 401){
+                                        window.location = '/Home';
+                                    }
+                                }
+                        });
+            });
+        });
+        function OpenModel(id){
+            alert(id);
+        }
+        function RateNow(ratevalue){
+                     $.ajax({
+                            type: "POST", contentType: "application/json; charset=utf-8", dataType: "json",
+                            data: JSON.stringify({
+                                RatingValue:ratevalue,TextID:@(ViewBag.IDPassedText)
+                            }),
+                            url: "/Texts/RateText",
+                            headers: {"Authorization": "Bearer "+ localStorage.getItem('accesstoken')},
+                            success: function (Data) {
+                               alert(Data.message);
+                               BuildGeneres();
+                               BuildTextDetails(id);
+                               GetReviewsAndComments(id);
+
+                            },
+                             error: function(xhr, error, thrown) {
+                                    if (xhr.status == 401){
+                                        window.location = '/Home';
+                                    }
+                                }
+                        });
+        }
+        function RemoveTextState(stateid){
+            $.ajax({
+                            type: "DELETE", contentType: "application/json; charset=utf-8", dataType: "json",
+                            data: JSON.stringify({
+                                IDState:stateid,TextID:@(ViewBag.IDPassedText)
+                            }),
+                            url: "/Texts/RemoveTextState",
+                            headers: {"Authorization": "Bearer "+ localStorage.getItem('accesstoken')},
+                            success: function (Data) {
+                               alert(Data.message);
+                               BuildGeneres();
+                               BuildTextDetails(id);
+                               GetReviewsAndComments(id);
+
+                            },
+                             error: function(xhr, error, thrown) {
+                                    if (xhr.status == 401){
+                                        window.location = '/Home';
+                                    }
+                                }
+                        });
+        }
+         function AddTextState(stateid){
+            $.ajax({
+                            type: "POST", contentType: "application/json; charset=utf-8", dataType: "json",
+                            data: JSON.stringify({
+                                IDState:stateid,TextID:@(ViewBag.IDPassedText)
+                            }),
+                            url: "/Texts/AddTextState",
+                            headers: {"Authorization": "Bearer "+ localStorage.getItem('accesstoken')},
+                            success: function (Data) {
+                               alert(Data.message);
+                               BuildGeneres();
+                               BuildTextDetails(id);
+                               GetReviewsAndComments(id);
+
+                            },
+                            error: function(xhr, error, thrown) {
+                                    if (xhr.status == 401){
+                                        window.location = '/Home';
+                                    }
+                                }
+                        });
+        }
+        function GetReviewsAndComments(textid){
+            $.ajax({
+                            type: "GET",
+                            url: "/Texts/GetReviewsAndComments",
+                            data: {textid:textid},
+                            headers: {"Authorization": "Bearer "+ localStorage.getItem('accesstoken')},
+                            success: function (Reviews) {
+                               BuildReviewsAndTexts(textid,Reviews);
+
+                            },
+                             error: function(xhr, error, thrown) {
+                                    if (xhr.status == 401){
+                                        window.location = '/Home';
+                                    }
+                                }
+                        });
+        }
+        function DeleteComment(commentid){
+             $.ajax({
+                            type: "Delete",
+                            url: "/Texts/DeleteComment", contentType: "application/json; charset=utf-8", dataType: "json",
+                            data: JSON.stringify({
+                                commentid:commentid
+                            }),
+                            headers: {"Authorization": "Bearer "+ localStorage.getItem('accesstoken')},
+                            success: function (Data) {
+                              alert(Data.message);
+                              GetReviewsAndComments(id);
+                            },
+                             error: function(xhr, error, thrown) {
+                                    if (xhr.status == 401){
+                                        window.location = '/Home';
+                                    }
+                                }
+                        });
+        }
+         function DeleteReview(reviewid){
+             $.ajax({
+                            type: "Delete",
+                            url: "/Texts/DeleteReview", contentType: "application/json; charset=utf-8", dataType: "json",
+                             data: JSON.stringify({
+                                reviewid:reviewid
+                            }),
+                            headers: {"Authorization": "Bearer "+ localStorage.getItem('accesstoken')},
+                            success: function (Data) {
+                              alert(Data.message);
+                              GetReviewsAndComments(id);
+                            },
+                             error: function(xhr, error, thrown) {
+                                    if (xhr.status == 401){
+                                        window.location = '/Home';
+                                    }
+                                }
+                        });
+        }
+        function BuildReviewsAndTexts(textid,reviews){
+            var contenthtml='';
+             $(".ReviewsDiv").html('');
+            for(var i=0;i<reviews.length;i++){
+                contenthtml+='<div class="media mb40"><div class="media-body">';
+                contenthtml+=' <li class="row clearfix"> <div class="icon-box col-md-2 col-4">';
+                contenthtml+='<img class="img-fluid img-thumbnail" src="'+reviews[i].imagePath+'" alt="Awesome Image"></div>';
+                contenthtml+=' <div class="text-box col-md-10 col-8 p-l-0 p-r0"> <h5 class="m-b-0">'+reviews[i].username+'</h5>';
+                contenthtml+=' <p>'+reviews[i].body+'</p>';
+                contenthtml+='<ul class="list-inline"><li><a href="javascript:void(0);" class="float-right" data-toggle="collapse" data-target="#comment'+reviews[i].id+'">Show Comments</a></li>&nbsp;&nbsp;';
+                contenthtml+=' <li><a  href="javascript:void(0);" onclick="Comment(-1,'+reviews[i].id+');" class="float-right" >Comment</a></li>';
+                if(reviews[i].showdelete)
+                   contenthtml+='<a onclick="DeleteReview('+reviews[i].id+')" style="cursor:pointer;"><i class="fa fa-trash"></i></a>';
+                contenthtml+='</ul></div></li>';
+                for(var j=0;j<reviews[i].comments.length;j++){
+                    var comment=reviews[i].comments[j];
+                contenthtml+=' <li class="row clearfix collapse" style="background-color:#e8ebe9;margin-left:30px !important" id="comment'+reviews[i].id+'">  <div class="icon-box col-md-2 col-4">';
+                contenthtml+='<img class="img-fluid img-thumbnail" src="'+comment.imagePath+'" alt="Awesome Image"></div>';
+                contenthtml+=' <div class="text-box col-md-10 col-8 p-l-0 p-r0"> <h5 class="m-b-0">'+comment.username+'</h5>';
+                contenthtml+=' <p>'+comment.body+'</p>';
+                contenthtml+='<ul class="list-inline"><li><a href="javascript:void(0);" class="float-right" data-toggle="collapse" data-target="#replies'+comment.id+'">Show Replies</a></li>&nbsp;&nbsp;';
+                contenthtml+=' <li><a  href="javascript:void(0);" onclick="Reply('+comment.id+','+reviews[i].id+');" class="float-right" >Reply</a></li>';
+                if(comment.showdelete)
+                    contenthtml+='<a onclick="DeleteComment('+comment.id+')" style="cursor:pointer;"><i class="fa fa-trash"></i></a>';
+                contenthtml+='</ul></div></li>';
+
+                 for(var k=0;k<comment.replies.length;k++)
+                 {
+                    var reply=reviews[i].comments[j].replies[k];
+                    console.log(reply);
+                    contenthtml+=' <li class="row clearfix collapse" style="background-color:azure;margin-left:50px !important" id="replies'+comment.id+'"> <div class="icon-box col-md-2 col-4">';
+                    contenthtml+='<img class="img-fluid img-thumbnail" src="'+reply.imagePath+'" alt="Awesome Image"></div>';
+                    contenthtml+=' <div class="text-box col-md-10 col-8 p-l-0 p-r0"> <h5 class="m-b-0">'+reply.username+'</h5>';
+                    contenthtml+=' <p>'+reply.body+'</p>';
+                    contenthtml+='<ul class="list-inline">';
+                    contenthtml+=' <li><a  href="javascript:void(0);" onclick="Reply('+comment.id+','+reviews[i].id+');" class="float-right" >Reply</a></li>';
+                    if(reply.showdelete)
+                         contenthtml+='<a onclick="DeleteComment('+comment.id+')" style="cursor:pointer;"><i class="fa fa-trash"></i></a>';
+                    contenthtml+='</ul></div></li>';
+
+                }
+
+             }
+             contenthtml+='</div></div>';
+            } 
+            console.log(contenthtml);
+
+            $(".ReviewsDiv").html(contenthtml);
+
+        }
+        function Comment(commentid,reviewid){
+              $("#modaltitle").html("Comment");
+              $("#commentid").val(commentid);
+              $("#reviewid").val(reviewid);
+              $("#typeof").val("Comment");
+
+              $("#myModal").modal('show');
+        }
+        function Reply(commentid,reviewid){
+             $("#modaltitle").html("Reply");
+             $("#commentid").val(commentid);
+              $("#reviewid").val(reviewid);
+              $("#typeof").val("Reply");
+              $("#myModal").modal('show');
+        }
+
+        function BuildGeneres(){
+             $.ajax({
+                            type: "GET",
+                            url: "/Texts/GetGenres",
+                            headers: {"Authorization": "Bearer "+ localStorage.getItem('accesstoken')},
+                            success: function (Genres) {
+                                var content='';
+                                for(var i=0;i<Genres.length;i++)
+                                {
+                                 content+=' <li><a href="/Texts/GetGenreTexts/'+Genres[i].id+'">'+Genres[i].name+'</a></li>' ;   
+                                }
+                                $(".categories").html(content);
+                            },
+                             error: function(xhr, error, thrown) {
+                                    if (xhr.status == 401){
+                                        window.location = '/Home';
+                                    }
+                                }
+                        });
+        }
+        function BuildTextDetails(iduser){
+            try{
+             $.ajax({
+                            type: "GET",
+                            url: "/Texts/GetTextDetails",
+                            data: { id: iduser},
+                            headers: {"Authorization": "Bearer "+ localStorage.getItem('accesstoken')},
+                            success: function (Data) {
+                                     var textID=Data.idText;
+                                    $("#Title").html(Data.title);
+                                    $("#TextContent").html(Data.text);
+                                    $("#PublishedDate").html(Data.publishedDate);
+                                    $("#ReviewCount").html(Data.reviewCount);
+                                    $("#redirect_publisher").html(Data.publisherName);
+                                    $("#textimage").attr("src",Data.imagePath);
+                                    var redirect='/Home/ViewPublisher/'+iduser;
+                                    $("#redirect_publisher").attr("href",redirect);
+
+                                    $(".textactionsdiv").html('');
+                                    var actionshtml='';
+
+                                    if(Data.statesids.length==0)
+                                    {
+                                        actionshtml+=' <a href="javascript:void(0);" onclick="AddTextState(1);" class="btn btn-info" role="button">Want to Read </a>';
+                                        actionshtml+=' <a href="javascript:void(0);" onclick="AddTextState(2);" class="btn btn-success" role="button">Currently Reading</a>';
+                                        actionshtml+=' <a href="javascript:void(0);" onclick="AddTextState(2);" class="btn btn-primary" role="button">Finished Reading</a>';
+                                    }
+
+                                    if(Data.statesids.includes(1))
+                                          actionshtml+='<a href="javascript:void(0);" onclick="RemoveTextState(1);" class="btn btn-danger" role="button">Remove From Want to Read</a>';
+                                   
+                                    if(Data.statesids.includes(2))
+                                          actionshtml+='<a href="javascript:void(0);" onclick="RemoveTextState(2);" class="btn btn-danger" role="button">Remove From Currently Reading</a>';
+                                    
+                                    if(Data.statesids.includes(3))
+                                         actionshtml+=' <a href="javascript:void(0);" onclick="RemoveTextState(3);" class="btn btn-danger" role="button">Remove From Finished Reading</a>';
+                                   
+                                    $(".textactionsdiv").html(actionshtml);
+
+                                   var userrating=parseInt(Data.yourratings);
+                                   if(userrating==-1){
+                                       $("#ratingtitle").html("Rate Now!");
+                                   }
+                                   else
+                                   {
+                                       $("#ratingtitle").html("Your Rating");
+                                       $(".yourratings").html('');
+                                      var htmlcontentrate='<li class="list-inline-item"><h5>'+Data.yourratings+'</h5></li>';
+                                      var ucount=5-userrating;
+                                        htmlcontentrate+='<li class="list-inline-item">';
+                                          for(var j=0;j<userrating;j++)
+                                             htmlcontentrate +='<a href ="#" ><span class="fa fa-star yellow" style="color: #f3da35" ></span></a>';
+                                         for(var k=0;k<ucount;k++)
+                                            htmlcontentrate +='<a href ="#" ><span class="fa fa-star " style="color:black" ></span></a>';
+
+                                            htmlcontentrate+='</li></div><hr class="mb40">';
+                                          
+                                         $(".yourratings").html(htmlcontentrate);
+                                   }
+                                    var content='<li class="list-inline-item"><h5>'+Data.rating+'</h5></li>';
+                                    var count=5-parseInt(Data.rating);
+                                         content+='<li class="list-inline-item">';
+                                          for(var j=0;j<Data.rating;j++)
+                                             content +='<a href ="#" ><span class="fa fa-star yellow" style="color: #f3da35" ></span></a>';
+                                          for(var k=0;k<count;k++)
+                                             content +='<a href ="#" ><span class="fa fa-star " style="color:black" ></span></a>';
+                                             content+='</li></div><hr class="mb40">';
+                                          
+                                    $(".ratings").html(content);
+                                    GetReviewsAndComments(textID);
+                            },
+                             error: function(xhr, error, thrown) {
+                                    if (xhr.status == 401){
+                                        window.location = '/Home';
+                                    }
+                                }
+                        });
+                        }
+                        catch(o){
+                            alert(o);
+                        }
+        }
+        </script>

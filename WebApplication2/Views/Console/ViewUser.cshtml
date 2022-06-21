@@ -1,0 +1,292 @@
+﻿
+@{
+    ViewData["Title"] = "ViewUser";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+@section Styles{
+           <link rel="stylesheet" href="~/css/viewuser.css" />
+           <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+           <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+          <link href="https://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	      <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+}
+<div class="container bootstrap snippets bootdeys" style="margin-left:0px !important;">
+    <div class="row" id="user-profile">
+        <div class="col-lg-3 col-md-4 col-sm-4">
+            <div class="main-box clearfix">
+                <img id="profileimg" src=" alt="" class="profile-img img-responsive center-block">
+                <div class="profile-label">
+                    <span class="label label-danger" id="profilename"></span>
+                </div>
+                <br/><br/>
+                <div class="profile-since">
+                   <span id="joindate"> Member since:</span>
+                </div>
+                <div class="profile-message-btn center-block text-center" id="followdiv">
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-lg-9 col-md-8 col-sm-8">
+            <div class="main-box clearfix">
+
+                <div class="tabs-wrapper profile-tabs">
+                    <ul class="nav nav-tabs">
+                        <li><a href="#tab-friends" data-toggle="tab">Friends</a></li>
+                        <li><a href="#tab-chat" data-toggle="tab">Chat</a></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade in active" id="tab-friends">
+                            <ul class="widget-users row" id="friendsul">
+
+                            </ul>
+                        </div>
+
+                        <div class="tab-pane fade" id="tab-chat">
+                            <div class="conversation-wrapper">
+                                <div class="conversation-content">
+                                    <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 340px;">
+                                        <div class="conversation-inner"  style="overflow: hidden; width: auto; height: 340px;" id="chatcontent">
+
+                                        </div>
+                                        <div class="slimScrollBar" style="width: 7px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px; background: rgb(0, 0, 0);"></div>
+                                        <div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; opacity: 0.2; z-index: 90; right: 1px; background: rgb(51, 51, 51);"></div>
+                                    </div>
+                                </div>
+                                <div class="conversation-new-message">
+                                    <form>
+                                        <div class="form-group">
+                                            <textarea class="form-control" id="msgtext" rows="2" placeholder="Enter your message..."></textarea>
+                                        </div>
+
+                                        <div class="clearfix" >
+                                            <button type="submit" id="sendmsgbtn" class="btn btn-success pull-right">Send message</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+  $(function () {
+
+      var id=@(ViewBag.IDPassedUser);
+       GetConversation(id);
+       $('#friendsul').html('');
+       GetFriendsForUser(id);
+       GetAnyonyomsUserInfo(id);
+       BuildTextsLists(id);
+       $("#sendmsgbtn").click(function(){
+             var text=$("#msgtext").val();
+             var title=$("#reviewtitle").val();
+             $.ajax({
+                        type: "POST", contentType: "application/json; charset=utf-8", dataType: "json",
+                        data: JSON.stringify({
+                            Text:text,RecepientUserID:id
+                        }),
+                        url: "/Followers/SendMessage",
+                        headers: {"Authorization": "Bearer "+ localStorage.getItem('accesstoken')},
+                        success: function (Data) {
+                            alert(Data.message);
+                            GetConversation(id);
+
+                        },
+                         error: function(xhr, error, thrown) {
+                                    if (xhr.status == 401){
+                                        window.location = '/Home';
+                                    }
+                                }
+                    });
+       });
+  });
+
+     
+  function GetAnyonyomsUserInfo(iduser){
+      try{
+                   $.ajax({
+                                    type: "GET",
+                                    data: { id: iduser},
+                                    url: "/Followers/GetAnoynmousProfileDetails",
+                                     headers: {"Authorization": "Bearer "+ localStorage.getItem('accesstoken')},
+                                    success: function (Data) {
+                                       $("#joindate").html("member since :"+Data.memberdate);
+                                       $("#profilename").html(Data.name);
+                                       $("#profileimg").attr("src",Data.imagePath);
+                                       var btnhtml='';
+                                       if(!Data.isfollowing){
+                                          btnhtml+='<button type="button" onclick="Follow('+iduser+')" class="btn btn-success pull-right ">Follow</button></div>'
+                                       }
+                                       else{
+                                         btnhtml+='<button type="button" onclick="UnFollow('+iduser+')" class="btn btn-success pull-right ">UnFollow</button></div>'
+
+                                       }
+                                       $("#followdiv").html(btnhtml);
+        
+                                    },
+                                     error: function(xhr, error, thrown) {
+                                    if (xhr.status == 401){
+                                        window.location = '/Home';
+                                    }
+                                }
+                                });
+          }
+          catch(o){
+            alert(o);
+          }
+  }
+  function Follow(userid){
+    try{
+     $.ajax({
+                                    type: "PUT",
+                                    url: "/Followers/Follow",
+                                    data: { userid: userid},
+                                    headers: {"Authorization": "Bearer "+ localStorage.getItem('accesstoken')},
+                                    success: function (Data) {
+                                        console.log(Data);
+                                        alert(Data.message);
+                                    },
+                                    error: function(xhr, error, thrown) {
+                                    if (xhr.status == 401){
+                                        window.location = '/Home';
+                                    }
+                                }
+                                });
+          }
+          catch(o){
+            alert(o);
+          }
+
+}
+function UnFollow(userid){
+     try{
+     $.ajax({
+                                    type: "PUT",
+                                    url: "/Followers/UnFollow",
+                                    data: { userid: userid},
+                                    headers: {"Authorization": "Bearer "+ localStorage.getItem('accesstoken')},
+                                    success: function (Data) {
+                                        console.log(Data);
+                                        alert(Data.message);
+                                    },
+                                    error: function (Data) {
+                                      
+                                        alert(Data.message);
+                                    }
+                                });
+          }
+          catch(o){
+            alert(o);
+          }
+}
+
+
+  function GetFriendsForUser(iduser){
+          try
+          {
+                   $.ajax({
+                                    type: "GET",
+                                    url: "/Followers/GetFollowersForUser",
+                                    data: { id: iduser},
+                                    headers: {"Authorization": "Bearer "+ localStorage.getItem('accesstoken')},
+                                    success: function (Data) {
+                                        BuildFriendsList(Data);
+                                    },
+                                    error: function(xhr, error, thrown) {
+                                    if (xhr.status == 401){
+                                        window.location = '/Home';
+                                    }
+                                }
+                                });
+          }
+          catch(o){
+            alert(o);
+          }
+
+     }
+
+function GetConversation(id){
+          try
+          {
+                   $.ajax({
+                                    type: "GET",
+                                    data: { idfriend:id},
+                                    headers: {"Authorization": "Bearer "+ localStorage.getItem('accesstoken')},
+                                    url: "/Followers/GetConversationMessages",
+                                    success: function (Data) {
+                                        BuildChats(Data);
+                                    },
+                                    error: function(xhr, error, thrown) {
+                                    if (xhr.status == 401){
+                                        window.location = '/Home';
+                                    }
+                                }
+                                });
+          }
+          catch(o){
+            alert(o);
+          }
+
+     }
+
+  function BuildChats(messages){
+      // right sent
+      // left received
+      var sentmsg='';
+      var receivedmsg='';
+      var  htmlcontent=''
+      var classname;
+        $("#chatcontent").html('');
+      for(var i=0; i<messages.length;i++)
+      {
+
+          if(messages[i].type=='sent')
+              classname='item-right';
+          else
+             classname='item-left';
+             
+
+             htmlcontent+='<div class="conversation-item '+classname+' clearfix"> <div class="conversation-user">';
+             htmlcontent+=' <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="img-responsive" alt=""></div>';
+             htmlcontent+='<div class="conversation-body"><div class="name"><span>'+messages[i].sender+'<span></div>';
+             htmlcontent+='<div class="time hidden-xs">'+messages[i].regdate+'</div>';
+             htmlcontent+=' <div class="text">'+messages[i].text+'</div></div></div>';
+      }
+      $("#chatcontent").html(htmlcontent);
+}
+
+  function BuildFriendsList(friends){
+    var htmlcontent='';
+     $('#friendsul').html('');
+    for(var i=0;i<friends.length;i++){
+         htmlcontent+='<li class="col-md-6"> <div class="img"> <img src="'+friends[i].imagePath+'" class="img-responsive"  alt="">';
+         htmlcontent +=' </div><div class="details"><div class="name"><a href="/Home/ViewUser/'+friends[i].userId+'">'+friends[i].name+'</a> </div> <div class="time online"> <i class="fa fa-check-circle"></i>';
+         htmlcontent+=friends[i].followeddate+'</div> </div><li>';
+    }
+    $('#friendsul').html(htmlcontent);
+}
+
+  function BuildTextsLists(texts){
+    var htmlcontent='';
+    for(var i=0;i<texts.length;i++){
+            htmlcontent+='<tr><td class="text-center"> <i class="fa fa-comment"></i> </td>';
+    htmlcontent+='<td class="text-center"> <i class="fa fa-comment"></i> </td>';
+     htmlcontent+='<td>'+texts[i].title+'</td>';
+     htmlcontent+='<td>'+texts[i].publishedate+'</td></tr>';
+    }
+    $("#textstable").html(htmlcontent);
+}
+
+
+ 
+ </script>
