@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [Goodreads_Clone_DB]    Script Date: 6/20/2022 9:25:16 PM ******/
+/****** Object:  Database [Goodreads_Clone_DB]    Script Date: 6/22/2022 5:57:59 PM ******/
 CREATE DATABASE [Goodreads_Clone_DB]
  CONTAINMENT = NONE
  WITH CATALOG_COLLATION = DATABASE_DEFAULT
@@ -72,11 +72,13 @@ ALTER DATABASE [Goodreads_Clone_DB] SET DELAYED_DURABILITY = DISABLED
 GO
 ALTER DATABASE [Goodreads_Clone_DB] SET ACCELERATED_DATABASE_RECOVERY = OFF  
 GO
+EXEC sys.sp_db_vardecimal_storage_format N'Goodreads_Clone_DB', N'ON'
+GO
 ALTER DATABASE [Goodreads_Clone_DB] SET QUERY_STORE = OFF
 GO
 USE [Goodreads_Clone_DB]
 GO
-/****** Object:  Table [dbo].[Comments]    Script Date: 6/20/2022 9:25:16 PM ******/
+/****** Object:  Table [dbo].[Comments]    Script Date: 6/22/2022 5:57:59 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -95,7 +97,7 @@ CREATE TABLE [dbo].[Comments](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Friendlings]    Script Date: 6/20/2022 9:25:16 PM ******/
+/****** Object:  Table [dbo].[Friendlings]    Script Date: 6/22/2022 5:57:59 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -112,7 +114,7 @@ CREATE TABLE [dbo].[Friendlings](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Genres]    Script Date: 6/20/2022 9:25:16 PM ******/
+/****** Object:  Table [dbo].[Genres]    Script Date: 6/22/2022 5:57:59 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -128,7 +130,7 @@ CREATE TABLE [dbo].[Genres](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Messages]    Script Date: 6/20/2022 9:25:16 PM ******/
+/****** Object:  Table [dbo].[Messages]    Script Date: 6/22/2022 5:57:59 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -145,7 +147,7 @@ CREATE TABLE [dbo].[Messages](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Publishers]    Script Date: 6/20/2022 9:25:16 PM ******/
+/****** Object:  Table [dbo].[Publishers]    Script Date: 6/22/2022 5:57:59 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -162,7 +164,7 @@ CREATE TABLE [dbo].[Publishers](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Ratings]    Script Date: 6/20/2022 9:25:16 PM ******/
+/****** Object:  Table [dbo].[Ratings]    Script Date: 6/22/2022 5:57:59 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -180,7 +182,7 @@ CREATE TABLE [dbo].[Ratings](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Reviews]    Script Date: 6/20/2022 9:25:16 PM ******/
+/****** Object:  Table [dbo].[Reviews]    Script Date: 6/22/2022 5:57:59 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -199,7 +201,7 @@ CREATE TABLE [dbo].[Reviews](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[States]    Script Date: 6/20/2022 9:25:16 PM ******/
+/****** Object:  Table [dbo].[States]    Script Date: 6/22/2022 5:57:59 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -213,24 +215,7 @@ CREATE TABLE [dbo].[States](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Text_Authors]    Script Date: 6/20/2022 9:25:16 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Text_Authors](
-	[Text_Author_ID] [int] IDENTITY(1,1) NOT NULL,
-	[Text_ID] [int] NOT NULL,
-	[Author_ID] [int] NOT NULL,
-	[Created_At] [datetime] NOT NULL,
-	[Updated_At] [datetime] NOT NULL,
- CONSTRAINT [PK_Text_Authors] PRIMARY KEY CLUSTERED 
-(
-	[Text_Author_ID] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[Text_Genres]    Script Date: 6/20/2022 9:25:16 PM ******/
+/****** Object:  Table [dbo].[Text_Genres]    Script Date: 6/22/2022 5:57:59 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -247,7 +232,7 @@ CREATE TABLE [dbo].[Text_Genres](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Text_States]    Script Date: 6/20/2022 9:25:16 PM ******/
+/****** Object:  Table [dbo].[Text_States]    Script Date: 6/22/2022 5:57:59 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -265,7 +250,7 @@ CREATE TABLE [dbo].[Text_States](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Texts]    Script Date: 6/20/2022 9:25:16 PM ******/
+/****** Object:  Table [dbo].[Texts]    Script Date: 6/22/2022 5:57:59 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -285,7 +270,7 @@ CREATE TABLE [dbo].[Texts](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Users]    Script Date: 6/20/2022 9:25:16 PM ******/
+/****** Object:  Table [dbo].[Users]    Script Date: 6/22/2022 5:57:59 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -343,6 +328,7 @@ INSERT [dbo].[Messages] ([ID], [IDSender], [IDReceiver], [Message], [RegDate]) V
 INSERT [dbo].[Messages] ([ID], [IDSender], [IDReceiver], [Message], [RegDate]) VALUES (4, 1, 1003, N'I want to read a new book', CAST(N'2022-06-19T16:23:13.133' AS DateTime))
 INSERT [dbo].[Messages] ([ID], [IDSender], [IDReceiver], [Message], [RegDate]) VALUES (5, 1003, 1005, N'Hello
 ', CAST(N'2022-06-20T20:58:03.360' AS DateTime))
+INSERT [dbo].[Messages] ([ID], [IDSender], [IDReceiver], [Message], [RegDate]) VALUES (6, 1003, 1004, N'Hello', CAST(N'2022-06-22T17:37:14.093' AS DateTime))
 SET IDENTITY_INSERT [dbo].[Messages] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Publishers] ON 
@@ -427,32 +413,32 @@ INSERT [dbo].[Users] ([UserID], [Username], [FirstName], [LastName], [Password],
 INSERT [dbo].[Users] ([UserID], [Username], [FirstName], [LastName], [Password], [Email], [Birthdate], [Gender], [CreatedAt], [UpdatedAt], [ImagePath], [isauthor]) VALUES (1019, N'Mick', N'Mick', N'Mick', N'Mick', N'mick@gmail.com', CAST(N'1988-12-12' AS Date), N'Male', CAST(N'2022-06-20T19:26:57.213' AS DateTime), CAST(N'2022-06-20T19:26:57.217' AS DateTime), NULL, 0)
 SET IDENTITY_INSERT [dbo].[Users] OFF
 GO
-/****** Object:  Index [Index_Comment_on_User_ID]    Script Date: 6/20/2022 9:25:37 PM ******/
+/****** Object:  Index [Index_Comment_on_User_ID]    Script Date: 6/22/2022 5:58:11 PM ******/
 CREATE NONCLUSTERED INDEX [Index_Comment_on_User_ID] ON [dbo].[Comments]
 (
 	[User_ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [Index_on_Parent_comment_ID]    Script Date: 6/20/2022 9:25:37 PM ******/
+/****** Object:  Index [Index_on_Parent_comment_ID]    Script Date: 6/22/2022 5:58:11 PM ******/
 CREATE NONCLUSTERED INDEX [Index_on_Parent_comment_ID] ON [dbo].[Comments]
 (
 	[Parent_comment_ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [IX_Friendlings_Friend_ID]    Script Date: 6/20/2022 9:25:37 PM ******/
+/****** Object:  Index [IX_Friendlings_Friend_ID]    Script Date: 6/22/2022 5:58:11 PM ******/
 CREATE NONCLUSTERED INDEX [IX_Friendlings_Friend_ID] ON [dbo].[Friendlings]
 (
 	[Friend_ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [IX_Friendlings_Friend_ID_User_ID]    Script Date: 6/20/2022 9:25:37 PM ******/
+/****** Object:  Index [IX_Friendlings_Friend_ID_User_ID]    Script Date: 6/22/2022 5:58:11 PM ******/
 CREATE NONCLUSTERED INDEX [IX_Friendlings_Friend_ID_User_ID] ON [dbo].[Friendlings]
 (
 	[Friend_ID] ASC,
 	[User_ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [IX_Friendlings_User_ID]    Script Date: 6/20/2022 9:25:37 PM ******/
+/****** Object:  Index [IX_Friendlings_User_ID]    Script Date: 6/22/2022 5:58:11 PM ******/
 CREATE NONCLUSTERED INDEX [IX_Friendlings_User_ID] ON [dbo].[Friendlings]
 (
 	[User_ID] ASC
@@ -460,102 +446,83 @@ CREATE NONCLUSTERED INDEX [IX_Friendlings_User_ID] ON [dbo].[Friendlings]
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [IsUnique_Genre]    Script Date: 6/20/2022 9:25:37 PM ******/
+/****** Object:  Index [IsUnique_Genre]    Script Date: 6/22/2022 5:58:11 PM ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IsUnique_Genre] ON [dbo].[Genres]
 (
 	[Genre_Name] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [index_ratings_on_text_id]    Script Date: 6/20/2022 9:25:37 PM ******/
+/****** Object:  Index [index_ratings_on_text_id]    Script Date: 6/22/2022 5:58:11 PM ******/
 CREATE NONCLUSTERED INDEX [index_ratings_on_text_id] ON [dbo].[Ratings]
 (
 	[Text_ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [index_ratings_on_user_id]    Script Date: 6/20/2022 9:25:37 PM ******/
+/****** Object:  Index [index_ratings_on_user_id]    Script Date: 6/22/2022 5:58:11 PM ******/
 CREATE NONCLUSTERED INDEX [index_ratings_on_user_id] ON [dbo].[Ratings]
 (
 	[User_ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [index_ratings_on_user_id_and_text_id]    Script Date: 6/20/2022 9:25:37 PM ******/
+/****** Object:  Index [index_ratings_on_user_id_and_text_id]    Script Date: 6/22/2022 5:58:11 PM ******/
 CREATE NONCLUSTERED INDEX [index_ratings_on_user_id_and_text_id] ON [dbo].[Ratings]
 (
 	[Text_ID] ASC,
 	[User_ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [index_reviews_on_text_id]    Script Date: 6/20/2022 9:25:37 PM ******/
+/****** Object:  Index [index_reviews_on_text_id]    Script Date: 6/22/2022 5:58:11 PM ******/
 CREATE NONCLUSTERED INDEX [index_reviews_on_text_id] ON [dbo].[Reviews]
 (
 	[Text_ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [index_Reviews_On_User_ID]    Script Date: 6/20/2022 9:25:37 PM ******/
+/****** Object:  Index [index_Reviews_On_User_ID]    Script Date: 6/22/2022 5:58:11 PM ******/
 CREATE NONCLUSTERED INDEX [index_Reviews_On_User_ID] ON [dbo].[Reviews]
 (
 	[User_ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [index_reviews_on_user_id_and_text_id]    Script Date: 6/20/2022 9:25:37 PM ******/
+/****** Object:  Index [index_reviews_on_user_id_and_text_id]    Script Date: 6/22/2022 5:58:11 PM ******/
 CREATE NONCLUSTERED INDEX [index_reviews_on_user_id_and_text_id] ON [dbo].[Reviews]
 (
 	[User_ID] ASC,
 	[Text_ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [IX_Text_Authors_Author_ID]    Script Date: 6/20/2022 9:25:37 PM ******/
-CREATE NONCLUSTERED INDEX [IX_Text_Authors_Author_ID] ON [dbo].[Text_Authors]
-(
-	[Author_ID] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-GO
-/****** Object:  Index [IX_Text_Authors_Author_ID_and_Text_ID]    Script Date: 6/20/2022 9:25:37 PM ******/
-CREATE NONCLUSTERED INDEX [IX_Text_Authors_Author_ID_and_Text_ID] ON [dbo].[Text_Authors]
-(
-	[Author_ID] ASC,
-	[Text_ID] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-GO
-/****** Object:  Index [IX_Text_Authors_Text_ID]    Script Date: 6/20/2022 9:25:37 PM ******/
-CREATE NONCLUSTERED INDEX [IX_Text_Authors_Text_ID] ON [dbo].[Text_Authors]
-(
-	[Text_ID] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-GO
-/****** Object:  Index [index_text_genre_on_user_id]    Script Date: 6/20/2022 9:25:37 PM ******/
+/****** Object:  Index [index_text_genre_on_user_id]    Script Date: 6/22/2022 5:58:11 PM ******/
 CREATE NONCLUSTERED INDEX [index_text_genre_on_user_id] ON [dbo].[Text_Genres]
 (
 	[Genre_ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [index_text_genres_on_text_id_and_genre_id]    Script Date: 6/20/2022 9:25:37 PM ******/
+/****** Object:  Index [index_text_genres_on_text_id_and_genre_id]    Script Date: 6/22/2022 5:58:11 PM ******/
 CREATE UNIQUE NONCLUSTERED INDEX [index_text_genres_on_text_id_and_genre_id] ON [dbo].[Text_Genres]
 (
 	[Text_ID] ASC,
 	[Genre_ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [IX_Text_Genre_Text_ID]    Script Date: 6/20/2022 9:25:37 PM ******/
+/****** Object:  Index [IX_Text_Genre_Text_ID]    Script Date: 6/22/2022 5:58:11 PM ******/
 CREATE NONCLUSTERED INDEX [IX_Text_Genre_Text_ID] ON [dbo].[Text_Genres]
 (
 	[Text_ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [Index_on_User_ID_and_Text_ID]    Script Date: 6/20/2022 9:25:37 PM ******/
+/****** Object:  Index [Index_on_User_ID_and_Text_ID]    Script Date: 6/22/2022 5:58:11 PM ******/
 ALTER TABLE [dbo].[Text_States] ADD  CONSTRAINT [Index_on_User_ID_and_Text_ID] UNIQUE NONCLUSTERED 
 (
 	[User_ID] ASC,
 	[Text_ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [Index_TextState_Text_ID]    Script Date: 6/20/2022 9:25:37 PM ******/
+/****** Object:  Index [Index_TextState_Text_ID]    Script Date: 6/22/2022 5:58:11 PM ******/
 CREATE NONCLUSTERED INDEX [Index_TextState_Text_ID] ON [dbo].[Text_States]
 (
 	[Text_ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [Index_TextState_User-ID]    Script Date: 6/20/2022 9:25:37 PM ******/
+/****** Object:  Index [Index_TextState_User-ID]    Script Date: 6/22/2022 5:58:11 PM ******/
 CREATE NONCLUSTERED INDEX [Index_TextState_User-ID] ON [dbo].[Text_States]
 (
 	[User_ID] ASC
@@ -563,7 +530,7 @@ CREATE NONCLUSTERED INDEX [Index_TextState_User-ID] ON [dbo].[Text_States]
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [IsUnique_Title]    Script Date: 6/20/2022 9:25:37 PM ******/
+/****** Object:  Index [IsUnique_Title]    Script Date: 6/22/2022 5:58:11 PM ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IsUnique_Title] ON [dbo].[Texts]
 (
 	[Title] ASC
@@ -571,7 +538,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IsUnique_Title] ON [dbo].[Texts]
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [IsUnique_email]    Script Date: 6/20/2022 9:25:37 PM ******/
+/****** Object:  Index [IsUnique_email]    Script Date: 6/22/2022 5:58:11 PM ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IsUnique_email] ON [dbo].[Users]
 (
 	[Email] ASC
@@ -579,7 +546,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [IsUnique_email] ON [dbo].[Users]
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [IsUnique_username]    Script Date: 6/20/2022 9:25:37 PM ******/
+/****** Object:  Index [IsUnique_username]    Script Date: 6/22/2022 5:58:11 PM ******/
 CREATE UNIQUE NONCLUSTERED INDEX [IsUnique_username] ON [dbo].[Users]
 (
 	[Username] ASC
@@ -641,11 +608,6 @@ ALTER TABLE [dbo].[Reviews]  WITH CHECK ADD  CONSTRAINT [FK_Reviews_Users] FOREI
 REFERENCES [dbo].[Users] ([UserID])
 GO
 ALTER TABLE [dbo].[Reviews] CHECK CONSTRAINT [FK_Reviews_Users]
-GO
-ALTER TABLE [dbo].[Text_Authors]  WITH CHECK ADD  CONSTRAINT [FK_Text_Authors_Texts] FOREIGN KEY([Text_ID])
-REFERENCES [dbo].[Texts] ([Text_ID])
-GO
-ALTER TABLE [dbo].[Text_Authors] CHECK CONSTRAINT [FK_Text_Authors_Texts]
 GO
 ALTER TABLE [dbo].[Text_Genres]  WITH CHECK ADD  CONSTRAINT [FK_Text_Genres_Genres] FOREIGN KEY([Genre_ID])
 REFERENCES [dbo].[Genres] ([Genre_ID])
