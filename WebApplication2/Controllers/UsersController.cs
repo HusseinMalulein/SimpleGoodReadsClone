@@ -38,7 +38,7 @@ namespace WebApplication2.Controllers
             else
             {
                 if (user.Password != model.Password)
-                    return Ok(new ResponseModel((int)ErrorCodesEnum.UserNameDoesntExists, "Wrong Password", new object()));// zabeta ka wwrong pass
+                    return Ok(new ResponseModel((int)ErrorCodesEnum.UserNameDoesntExists, "Wrong Password", new object()));
                 else
                 {
                     var tokenDescriptor = new SecurityTokenDescriptor

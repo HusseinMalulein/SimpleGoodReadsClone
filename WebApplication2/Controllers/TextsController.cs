@@ -478,16 +478,30 @@ namespace WebApplication2.Controllers
                         where !string.IsNullOrEmpty(m.Value)
                         select TrimSuffix(m.Value);
             var wordslist = words.ToList();
-            List<Texts> final = new List<Texts>();
+            List<Texts> matchingWholeTitle = new List<Texts>();
+            List<Texts> matchingAny = new List<Texts>();
+
+            #region Get Texts Matching Whole sentence
+
+            matchingWholeTitle = _context.Texts
+                   .Include(o => o.Text_Genres).ThenInclude(g => g.Genre)
+                   .Where(stringToCheck => stringToCheck.Title.ToLower().Contains(Text.Text.Trim().ToLower())).ToList();
+
+            #endregion
+
+            #region Get TExts matching title any word
+
             foreach (string w in wordslist)
             {
-                var matchingvalues = _context.Texts
-                    .Include(o => o.Text_Genres)
-                    .Include(o => o.Text_Genres)
-                    .Where(stringToCheck => stringToCheck.Description.Contains(w));
-                final.AddRange(matchingvalues);
+                var matchinganywordtext = _context.Texts
+                    .Include(o => o.Text_Genres).ThenInclude(g => g.Genre)
+                    .Where(text => text.Title.ToLower().Contains(w.ToLower()) && !matchingWholeTitle.Select(o => o.Text_ID).ToList().Contains(text.Text_ID));
+                var matching = matchinganywordtext.Where(o => !matchingWholeTitle.Select(o => o.Text_ID).ToList().Contains(o.Text_ID)).ToList();
+                matchingAny.AddRange(matching);
             }
-            var books = (from book in final
+            #endregion 
+
+            var books = (from book in matchingWholeTitle.Concat(matchingAny).Distinct()
                          select new
                          {
                              ID = book.Text_ID,
@@ -495,21 +509,36 @@ namespace WebApplication2.Controllers
                              Text = book.Description,
                              Genre = book.Text_Genres.Select(o => o.Genre.Genre_Name).ToList(),
                              Date = book.Created_At.ToString("yyyy-MM-dd"),
+                             imagePath = book.ImagePath,
                              statesids = book.Text_States.Where(o => o.User_ID == loggedinuserid).Select(o => o.IDState).Distinct().ToList()
                          }).ToList();
 
-            return Ok(books);
+            return Ok(books)
+;
         }
         [HttpPost]
         [Authorize]
+        [HttpPost]
+        [HttpPost]
         public IActionResult SearchUserTexts([FromBody] TextModel Text)
         {
-            if (string.IsNullOrEmpty(Text.Text))
-            {
-                return GetTexts();
-            }
-            MatchCollection matches = Regex.Matches(Text.Text, @"\b[\w']*\b");
+            List<Texts> anytexts = new List<Texts>();
+            List<Texts> matchingWhole = new List<Texts>();
 
+            int iduser = GetUserID();
+            #region  matching  whole  title
+
+            matchingWhole = _context.Text_States
+                    .Include(o => o.Text)
+                    .Include(o => o.Text.Text_Genres)
+                    .ThenInclude(g => g.Genre)
+                    .Where(text => text.Text.Title.Contains(Text.Text.Trim().ToLower()) && text.User_ID == iduser).Select(t => t.Text).ToList();
+
+            #endregion
+
+            #region  matching  any word
+
+            MatchCollection matches = Regex.Matches(Text.Text, @"\b[\w']*\b");
             var words = from m in matches.Cast<Match>()
                         where !string.IsNullOrEmpty(m.Value)
                         select TrimSuffix(m.Value);
@@ -520,10 +549,13 @@ namespace WebApplication2.Controllers
                 var matchingvalues = _context.Text_States
                     .Include(o => o.Text)
                     .Include(o => o.Text.Text_Genres)
-                    .Where(stringToCheck => stringToCheck.Text.Description.Contains(w)).Select(t => t.Text).ToList();
-                final.AddRange(matchingvalues);
+                    .Where(s => s.Text.Title.Contains(w) && s.User_ID == iduser && !matchingWhole.Select(o => o.Text_ID).ToList().Contains(s.Text_ID)).Select(t => t.Text).ToList();
+                anytexts.AddRange(matchingvalues);
             }
-            var books = (from book in final
+
+            #endregion
+
+            var books = (from book in matchingWhole.Concat(anytexts)
                          select new
                          {
                              ID = book.Text_ID,
@@ -531,6 +563,8 @@ namespace WebApplication2.Controllers
                              Text = book.Description,
                              Genre = book.Text_Genres.Select(o => o.Genre.Genre_Name).ToList(),
                              Date = book.Created_At.ToString("yyyy-MM-dd"),
+                             imagePath = book.ImagePath,
+                             statesids = book.Text_States.Where(o => o.User_ID == iduser).Select(o => o.IDState).Distinct().ToList()
                          }).ToList();
 
             return Ok(books);
