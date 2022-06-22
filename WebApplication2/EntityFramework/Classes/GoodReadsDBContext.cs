@@ -16,7 +16,6 @@ namespace WebApplication2.EntityFramework.Classes
         public virtual DbSet<Ratings> Ratings { get; set; }
         public virtual DbSet<Reviews> Reviews { get; set; }
         public virtual DbSet<States> States { get; set; }
-        public virtual DbSet<Text_Authors> Text_Authors { get; set; }
         public virtual DbSet<Text_Genres> Text_Genres { get; set; }
         public virtual DbSet<Text_States> Text_States { get; set; }
         public virtual DbSet<Texts> Texts { get; set; }
@@ -30,7 +29,6 @@ namespace WebApplication2.EntityFramework.Classes
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=Goodreads_Clone_DB;Persist Security Info=True;User ID=sa;Password=YourStrong**Passw0rd;Trust Server Certificate=True;Command Timeout=300");
             }
         }
@@ -221,27 +219,6 @@ namespace WebApplication2.EntityFramework.Classes
                     .IsRequired()
                     .HasMaxLength(250)
                     .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<Text_Authors>(entity =>
-            {
-                entity.HasKey(e => e.Text_Author_ID);
-
-                entity.HasIndex(e => e.Author_ID, "IX_Text_Authors_Author_ID");
-
-                entity.HasIndex(e => new { e.Author_ID, e.Text_ID }, "IX_Text_Authors_Author_ID_and_Text_ID");
-
-                entity.HasIndex(e => e.Text_ID, "IX_Text_Authors_Text_ID");
-
-                entity.Property(e => e.Created_At).HasColumnType("datetime");
-
-                entity.Property(e => e.Updated_At).HasColumnType("datetime");
-
-                entity.HasOne(d => d.Text)
-                    .WithMany(p => p.Text_Authors)
-                    .HasForeignKey(d => d.Text_ID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Text_Authors_Texts");
             });
 
             modelBuilder.Entity<Text_Genres>(entity =>

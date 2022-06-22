@@ -9,7 +9,6 @@ namespace WebApplication2.EntityFramework.Tables
         {
             Ratings = new HashSet<Ratings>();
             Reviews = new HashSet<Reviews>();
-            Text_Authors = new HashSet<Text_Authors>();
             Text_Genres = new HashSet<Text_Genres>();
             Text_States = new HashSet<Text_States>();
         }
@@ -26,7 +25,6 @@ namespace WebApplication2.EntityFramework.Tables
         public virtual Publishers IDPublisherNavigation { get; set; }
         public virtual ICollection<Ratings> Ratings { get; set; }
         public virtual ICollection<Reviews> Reviews { get; set; }
-        public virtual ICollection<Text_Authors> Text_Authors { get; set; }
         public virtual ICollection<Text_Genres> Text_Genres { get; set; }
         public virtual ICollection<Text_States> Text_States { get; set; }
     }

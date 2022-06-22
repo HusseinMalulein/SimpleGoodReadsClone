@@ -46,10 +46,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Text_Authors]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Text_Genres]",
          "ObjectType": 0
       },
@@ -66,7 +62,7 @@
          "ObjectType": 0
       }
    ],
-   "UiHint": "82f2c2f41735.Goodreads_Clone_DB",
+   "UiHint": "09746433ec87.Goodreads_Clone_DB",
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": true,
    "UseDbContextSplitting": false,
