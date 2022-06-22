@@ -24,17 +24,7 @@ namespace WebApplication2.Controllers
             }
             catch (Exception ex) { return -1; }
         }
-        //public LoggedInInfo GetUserInfo()
-        //{
-        //    var identity = HttpContext.User.Identity as ClaimsIdentity;
-        //    if (identity != null)
-        //    {
-        //        this.UserName = identity.FindFirst("username").Value;
-        //        this.UserName = identity.FindFirst("lastname").Value;
-        //        return int.Parse(identity.FindFirst("userid").Value);
-        //    }
-        //    return -1;
-        //}
+     
     }
     public class LoggedInInfo
     {
